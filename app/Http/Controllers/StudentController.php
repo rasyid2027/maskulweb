@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lesson;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -58,7 +59,8 @@ class StudentController extends Controller
     public function show($id)
     {
         $student = Student::find($id);
-        return view('student.profile', compact('student'));
+        $subjects = Lesson::all();
+        return view('profile.profile', compact(['student', 'subjects']));
     }
 
     /**
@@ -113,5 +115,17 @@ class StudentController extends Controller
         $student = Student::find($id);
         $student->delete();
         return redirect('/student')->with('success', 'Data berhasil di hapus.');
+    }
+
+    public function addScore(Request $request, $id)
+    {
+        // dd($request->all());
+        $student = Student::find($id);
+        if ($student->lesson()->where('lesson_id', $request->lesson_id)->exists()) {
+            return redirect()->back()->with('errorScore', 'Nilai mata pelajaran sudah ada!');
+        }
+        $student->lesson()->attach($request->lesson_id, ['score' => $request->score]);
+
+        return redirect()->back();
     }
 }
