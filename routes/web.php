@@ -40,4 +40,5 @@ Route::group(['middleware' => ['auth', 'checkRole:admin,guru']], function() {
 
     Route::get('/student', [StudentController::class, 'index'])->name('student');
     Route::get('/student/{id}', [StudentController::class, 'show'])->name('profile');
+    Route::post('/student/{id}/add-score', [StudentController::class, 'addScore']);
 });
